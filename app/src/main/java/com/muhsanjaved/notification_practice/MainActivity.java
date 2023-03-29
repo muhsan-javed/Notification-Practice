@@ -5,12 +5,16 @@ import androidx.core.app.NotificationCompat;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String MESSAGE_KEY = "MESSAGE_KEY";
     EditText edTitle, edMessage;
     Button btnOne, btnTwo;
     private NotificationManager manager;
@@ -30,13 +34,30 @@ public class MainActivity extends AppCompatActivity {
 
             String title = edTitle.getText().toString();
             String message = edMessage.getText().toString();
+
+            Intent activityIntent = new Intent(this,MainActivity.class);
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, activityIntent,0);
+
+            Intent actionActivityIntent = new Intent(this,SecondActivity.class);
+            actionActivityIntent.putExtra(MESSAGE_KEY,message);
+
+            PendingIntent actionPendingIntent = PendingIntent.getActivity(this,0, actionActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this, App.CHANNEL_ONE_ID);
 
             builder.setSmallIcon(R.drawable.one)
                     .setContentText(title)
                     .setContentText(message)
+                    .setContentIntent(contentIntent)
+                    .addAction(R.mipmap.ic_launcher,"Action 1 ", actionPendingIntent)
+                    .addAction(R.mipmap.ic_launcher,"Action 2 ", null)
+                    .addAction(R.mipmap.ic_launcher,"Action 3 ", null)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
-
+                    .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                    .setColor(Color.GREEN)
+                    .setOnlyAlertOnce(true)
+                    .setAutoCancel(true)
+                    .setDefaults(NotificationCompat.DEFAULT_ALL)
                     .build();
 
             manager.notify(1,builder.build());
@@ -52,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
                     .setContentText(title)
                     .setContentText(message)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-
                     .build();
 
             manager.notify(1,notification);
