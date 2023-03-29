@@ -41,7 +41,8 @@ public class MainActivity extends AppCompatActivity {
             Intent actionActivityIntent = new Intent(this,SecondActivity.class);
             actionActivityIntent.putExtra(MESSAGE_KEY,message);
 
-            PendingIntent actionPendingIntent = PendingIntent.getActivity(this,0, actionActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent actionPendingIntent = PendingIntent.getActivity(this,0,
+                    actionActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this, App.CHANNEL_ONE_ID);
 
@@ -68,11 +69,27 @@ public class MainActivity extends AppCompatActivity {
             String title = edTitle.getText().toString();
             String message = edMessage.getText().toString();
 
+            // broadcast
+            Intent broadcastIntent = new Intent(this, NotificationBroadcastReceiver.class);
+            broadcastIntent.putExtra(MESSAGE_KEY, message);
+
+            PendingIntent broadcastPendingIntent = PendingIntent.getBroadcast(this,0,
+                    broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            // Service
+            Intent serviceIntent = new Intent(this, MyIntentService.class);
+            broadcastIntent.putExtra(MESSAGE_KEY, message);
+
+            PendingIntent servicePendingIntent = PendingIntent.getService(this,0,
+                    serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
             Notification notification = new NotificationCompat.Builder(this, App.CHANNEL_TWO_ID)
                     .setSmallIcon(R.drawable.two_24)
                     .setContentText(title)
                     .setContentText(message)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .addAction(R.mipmap.ic_launcher, "Show Toast", broadcastPendingIntent)
+                    .addAction(R.mipmap.ic_launcher, "Star Service", servicePendingIntent)
                     .build();
 
             manager.notify(1,notification);
