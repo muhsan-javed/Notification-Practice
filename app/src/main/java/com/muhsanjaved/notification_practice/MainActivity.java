@@ -36,13 +36,14 @@ public class MainActivity extends AppCompatActivity {
             String message = edMessage.getText().toString();
 
             Intent activityIntent = new Intent(this,MainActivity.class);
-            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, activityIntent,0);
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, activityIntent,
+                    PendingIntent.FLAG_MUTABLE);
 
             Intent actionActivityIntent = new Intent(this,SecondActivity.class);
             actionActivityIntent.putExtra(MESSAGE_KEY,message);
 
             PendingIntent actionPendingIntent = PendingIntent.getActivity(this,0,
-                    actionActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    actionActivityIntent, PendingIntent.FLAG_IMMUTABLE);
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this, App.CHANNEL_ONE_ID);
 
@@ -74,14 +75,14 @@ public class MainActivity extends AppCompatActivity {
             broadcastIntent.putExtra(MESSAGE_KEY, message);
 
             PendingIntent broadcastPendingIntent = PendingIntent.getBroadcast(this,0,
-                    broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    broadcastIntent, PendingIntent.FLAG_IMMUTABLE);
 
             // Service
             Intent serviceIntent = new Intent(this, MyIntentService.class);
             broadcastIntent.putExtra(MESSAGE_KEY, message);
 
             PendingIntent servicePendingIntent = PendingIntent.getService(this,0,
-                    serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    serviceIntent, PendingIntent.FLAG_IMMUTABLE);
 
             Notification notification = new NotificationCompat.Builder(this, App.CHANNEL_TWO_ID)
                     .setSmallIcon(R.drawable.two_24)
